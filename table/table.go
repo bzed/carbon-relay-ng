@@ -70,8 +70,11 @@ func (table *Table) Dispatch(buf []byte) {
 	buf_copy := make([]byte, len(buf))
 	copy(buf_copy, buf)
 
-	fields := bytes.Fields(buf_copy)
-
+	fields := bytes.Split(buf_copy, []byte(" "))
+	if len(fields) != 3 {
+		log.Info("split failed on: %s", buf_copy)
+		fields = bytes.Fields(buf_copy)
+	}
 	conf := table.config.Load().(TableConfig)
 
 	for _, matcher := range conf.blacklist {
